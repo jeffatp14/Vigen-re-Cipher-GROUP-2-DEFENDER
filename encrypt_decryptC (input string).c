@@ -30,8 +30,8 @@ void encryptData(char *data, char *key)
 
     for (int i = 0; i < dataLength; i++)
     {
-        char dataChar = toupper(data[i]);
-        char keyChar = toupper(key[i % keyLength]);
+        char dataChar = tolower(data[i]);
+        char keyChar = tolower(key[i % keyLength]);
 
         // Convert to the range 0-35
         if (isalnum(dataChar))
@@ -39,12 +39,12 @@ void encryptData(char *data, char *key)
             if (isdigit(dataChar))
                 dataChar -= '0';
             else
-                dataChar -= 'A' - 10;
+                dataChar -= 'a' - 10;
 
             if (isdigit(keyChar))
                 keyChar -= '0';
             else
-                keyChar -= 'A' - 10;
+                keyChar -= 'a' - 10;
 
             // Perform encryption using Vigenere algorithm
             char encryptedChar = (dataChar + keyChar) % 36;
@@ -53,7 +53,7 @@ void encryptData(char *data, char *key)
             if (encryptedChar < 10)
                 encryptedChar += '0';
             else
-                encryptedChar += 'A' - 10;
+                encryptedChar += 'a' - 10;
 
             // Update the data
             data[i] = encryptedChar;
@@ -68,8 +68,8 @@ void decryptData(char *data, char *key)
 
     for (int i = 0; i < dataLength; i++)
     {
-        char dataChar = toupper(data[i]);
-        char keyChar = toupper(key[i % keyLength]);
+        char dataChar = tolower(data[i]);
+        char keyChar = tolower(key[i % keyLength]);
 
         // Convert to the range 0-35
         if (isalnum(dataChar))
@@ -77,12 +77,12 @@ void decryptData(char *data, char *key)
             if (isdigit(dataChar))
                 dataChar -= '0';
             else
-                dataChar -= 'A' - 10;
+                dataChar -= 'a' - 10;
 
             if (isdigit(keyChar))
                 keyChar -= '0';
             else
-                keyChar -= 'A' - 10;
+                keyChar -= 'a' - 10;
 
             // Perform decryption using Vigenere algorithm
             char decryptedChar = (dataChar - keyChar + 36) % 36;
@@ -91,10 +91,7 @@ void decryptData(char *data, char *key)
             if (decryptedChar < 10)
                 decryptedChar += '0';
             else
-                decryptedChar += 'A' - 10;
-
-            // Convert to lowercase
-            decryptedChar = tolower(decryptedChar);
+                decryptedChar += 'a' - 10;
 
             // Update the data
             data[i] = decryptedChar;
@@ -153,4 +150,3 @@ int main()
 
     return 0;
 }
-
