@@ -49,7 +49,7 @@ void encryptData(char *data, char *key)
             // Perform encryption using Vigenere algorithm
             char encryptedChar = (dataChar + keyChar) % 36;
 
-            // Convert back to ASCII representation
+            // Convert back to Arduino-style representation
             if (encryptedChar < 10)
                 encryptedChar += '0';
             else
@@ -68,10 +68,10 @@ void decryptData(char *data, char *key)
 
     for (int i = 0; i < dataLength; i++)
     {
-        char dataChar = tolower(data[i]);
+        char dataChar = data[i];
         char keyChar = tolower(key[i % keyLength]);
 
-        // Convert to the range 0-35
+        // Convert back to numeric range
         if (isalnum(dataChar))
         {
             if (isdigit(dataChar))

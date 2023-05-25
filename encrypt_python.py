@@ -47,7 +47,7 @@ def encrypt_file_vigenere(file_path, keyword):
         print("Error: File not found or could not be accessed.")
 
 
-file_path = "capekdh.txt"
+file_path = "dummy_phonebook.txt"
 keyword = "santa132"
 
 # Encrypt the file
