@@ -52,4 +52,4 @@ encryptedText = encryptString(plaintext, encryptionKey)
 with open(outputFile, 'w') as file:
     file.write(encryptedText)
 
-print("Enkripsi selesai! Pesan terenkripsi tersimpan di: ", outputFile)
+print("Encryption complete. Encrypted text written to", outputFile)
