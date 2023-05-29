@@ -1,56 +1,61 @@
+def vigenereDecrypt(encryptedData, key):
+    dataLength = len(encryptedData)
+    keyLength = len(key)
+    decryptedData = ""
+    keyIndex = 0
 
-def decrypt_vigenere(ciphertext, keyword):
-    plaintext = ""
-    keyword = keyword.upper()
-    key_index = 0
+    for i in range(dataLength):
+        encryptedChar = encryptedData[i].lower()
+        keyChar = key[keyIndex % keyLength].lower()
 
-    for char in ciphertext:
-        if char.isalpha():
-            base = ord('A') if char.isupper() else ord('a')
-            shift = ord(keyword[key_index]) - ord('A')
-            decrypted_char = chr((ord(char) - base - shift) % 26 + base)
-            plaintext += decrypted_char
-            key_index = (key_index + 1) % len(keyword)
-        elif char.isdigit():
-            base = ord('0')
-            shift = ord(keyword[key_index]) - ord('A')
-            decrypted_digit = chr((ord(char) - base - shift) % 10 + base)
-            plaintext += decrypted_digit
-            key_index = (key_index + 1) % len(keyword)
-        else:
-            plaintext += char
-
-    return plaintext
-
-
-def decrypt_file_vigenere(file_path, keyword):
-    try:
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-
-        decrypted_lines = []
-        for line in lines:
-            line = line.strip()
-            if ',' in line:
-                encrypted_name, encrypted_phone = line.split(',', 1)
-                decrypted_name = decrypt_vigenere(encrypted_name, keyword)
-                decrypted_phone = decrypt_vigenere(encrypted_phone, keyword)
-                decrypted_line = f"{decrypted_name},{decrypted_phone}"
-                decrypted_lines.append(decrypted_line)
+        if encryptedChar.isalnum():
+            if encryptedChar.isdigit():
+                encryptedChar = int(encryptedChar)
             else:
-                decrypted_lines.append(line)
+                encryptedChar = ord(encryptedChar) - ord('a') + 10
 
-        with open(file_path, 'w') as file:
-            file.write('\n'.join(decrypted_lines))
+            if keyChar.isdigit():
+                keyChar = int(keyChar)
+            else:
+                keyChar = ord(keyChar) - ord('a') + 10
 
-        print("File decrypted successfully.")
-    except IOError:
-        print("Error: File not found or could not be accessed.")
+            decryptedChar = (encryptedChar - keyChar) % 36
+
+            if decryptedChar < 10:
+                decryptedChar = str(decryptedChar)
+            else:
+                decryptedChar = chr(decryptedChar + ord('a') - 10)
+
+            decryptedData += decryptedChar
+        else:
+            decryptedData += encryptedChar
+
+        if encryptedChar == '\n':
+            keyIndex = 0  # Reset the key index for a new line
+        else:
+            keyIndex += 1
+
+    return decryptedData
 
 
-# Example usage
-file_path = "capekdh.txt"
-keyword = "santa132"
+def decryptString(encryptedText, key):
+    decryptedData = vigenereDecrypt(encryptedText, key)
+    return decryptedData
 
-# Decrypt the file
-decrypt_file_vigenere(file_path, keyword)
+
+inputFile = 'encrypted.txt'
+outputFile = 'decrypted.txt'
+encryptionKey = 'santa132'
+
+# Read encrypted text from input file
+with open(inputFile, 'r') as file:
+    encryptedText = file.read().strip()
+
+# Decrypt the encrypted text
+decryptedData = decryptString(encryptedText, encryptionKey)
+
+# Write decrypted data to output file
+with open(outputFile, 'w') as file:
+    file.write(decryptedData)
+
+print("Decryption complete. Decrypted data written to", outputFile)
