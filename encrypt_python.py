@@ -1,54 +1,55 @@
-def encrypt_vigenere(plaintext, keyword):
-    ciphertext = ""
-    keyword = keyword.upper()
-    key_index = 0
+def vigenereEncrypt(data, key):
+    dataLength = len(data)
+    keyLength = len(key)
+    encryptedData = ""
 
-    for char in plaintext:
-        if char.isalpha():
-            base = ord('A') if char.isupper() else ord('a')
-            shift = ord(keyword[key_index]) - ord('A')
-            encrypted_char = chr((ord(char) - base + shift) % 26 + base)
-            ciphertext += encrypted_char
-            key_index = (key_index + 1) % len(keyword)
-        elif char.isdigit():
-            base = ord('0')
-            shift = ord(keyword[key_index]) - ord('A')
-            encrypted_digit = chr((ord(char) - base + shift) % 10 + base)
-            ciphertext += encrypted_digit
-            key_index = (key_index + 1) % len(keyword)
-        else:
-            ciphertext += char
+    for i in range(dataLength):
+        dataChar = data[i].lower()
+        keyChar = key[i % keyLength].lower()
 
-    return ciphertext
-
-
-def encrypt_file_vigenere(file_path, keyword):
-    try:
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-
-        encrypted_lines = []
-        for line in lines:
-            line = line.strip()
-            if ',' in line:
-                name, phone = line.split(',', 1)
-                encrypted_name = encrypt_vigenere(name, keyword)
-                encrypted_phone = encrypt_vigenere(phone, keyword)
-                encrypted_line = f"{encrypted_name},{encrypted_phone}"
-                encrypted_lines.append(encrypted_line)
+        if dataChar.isalnum():
+            if dataChar.isdigit():
+                dataChar = int(dataChar)
             else:
-                encrypted_lines.append(line)
+                dataChar = ord(dataChar) - ord('a') + 10
 
-        with open(file_path, 'w') as file:
-            file.write('\n'.join(encrypted_lines))
+            if keyChar.isdigit():
+                keyChar = int(keyChar)
+            else:
+                keyChar = ord(keyChar) - ord('a') + 10
 
-        print("File encrypted successfully.")
-    except IOError:
-        print("Error: File not found or could not be accessed.")
+            encryptedChar = (dataChar + keyChar) % 36
+
+            if encryptedChar < 10:
+                encryptedChar = str(encryptedChar)
+            else:
+                encryptedChar = chr(encryptedChar + ord('a') - 10)
+
+            encryptedData += encryptedChar
+        else:
+            encryptedData += dataChar
+
+    return encryptedData
 
 
-file_path = "dummy_phonebook.txt"
-keyword = "santa132"
+def encryptString(plaintext, key):
+    encryptedData = vigenereEncrypt(plaintext, key)
+    return encryptedData
 
-# Encrypt the file
-encrypt_file_vigenere(file_path, keyword)
+# Example usage
+inputFile = 'plaintext.txt'
+outputFile = 'encrypted.txt'
+encryptionKey = 'santa132'
+
+# Read plaintext from input file
+with open(inputFile, 'r') as file:
+    plaintext = file.read().strip()
+
+# Encrypt the plaintext
+encryptedText = encryptString(plaintext, encryptionKey)
+
+# Write encrypted text to output file
+with open(outputFile, 'w') as file:
+    file.write(encryptedText)
+
+print("Enkripsi selesai! Pesan terenkripsi tersimpan di: ", outputFile)
